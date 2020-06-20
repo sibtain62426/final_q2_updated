@@ -1,0 +1,260 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <link href="bootstrap.css" rel="stylesheet" />
+    <script src="jquery-3.4.1.js"></script>
+</head>
+<body>
+    <div class="container">
+	<h2>Wallet_Operations<h2>
+	
+	<form>
+	
+	<div class="form-group row">
+		<lable class="col-sm-2 col-form-lable">WalletId</lable>
+	<div class="col-sm-10">
+	<input type="text" class="form-control" id="WalletId " placeholder="WalletId ">
+	</div>
+	</div>
+	
+	<div class="form-group row">
+	<lable class="col-sm-2 col-form-lable">WalletName </lable>
+	<div class="col-sm-10">
+	<input type="text" class="form-control" id="WalletName " placeholder="WalletName ">
+	</div>
+	</div>
+	
+	<div class="form-group row">
+		<lable class="col-sm-2 col-form-lable">Description </lable>
+	<div class="col-sm-10">
+	<input type="text" class="form-control" id="Description " placeholder="Description ">
+	</div>
+	</div>
+	
+	<div class="form-group row">
+		<lable class="col-sm-2 col-form-lable">Amount </lable>
+	<div class="col-sm-10">
+	<input type="text" class="form-control" id="Amount " placeholder="Amount ">
+	</div>
+	</div>
+
+  <button type="button" class="btn btn-primary"  id="addbtn">Add Details</button>
+  </div>
+	
+	</form>
+       
+        <table class="table table-hover">
+            <thead>
+                <tr>
+					<th>WalletId</th>
+					<th>WalletName</th>
+					<th>Description</th>
+					<th>Amount</th>
+					<th></th>
+                </tr>
+            </thead>
+            <tbody id="welletbody">
+            </tbody>
+        </table>
+		<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Edit Wellet</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form>
+	
+	<div class="form-group row">
+		<lable class="col-sm-2 col-form-lable">WalletId</lable>
+	<div class="col-sm-10">
+	<input type="text" class="form-control" id="WalletId" placeholder="WalletId">
+	</div>
+	</div>
+	
+	<div class="form-group row">
+		<lable class="col-sm-2 col-form-lable">WalletName</lable>
+	<div class="col-sm-10">
+	<input type="text" class="form-control" id="WalletName" placeholder="WalletName">
+	</div>
+	</div>
+	
+	<div class="form-group row">
+		<lable class="col-sm-2 col-form-lable">Description</lable>
+	<div class="col-sm-10">
+	<input type="text" class="form-control" id="Description" placeholder="Description">
+	</div>
+	</div>
+	
+	<div class="form-group row">
+		<lable class="col-sm-2 col-form-lable">Amount</lable>
+	<div class="col-sm-10">
+	<input type="text" class="form-control" id="Amount" placeholder="Amount">
+	</div>
+	</div>
+	
+	
+  <div class="form-group row">
+  <div class="col-sm-2"></div>
+  <div class="col-sm-10">
+  <button type="button" class="btn btn-primary"  id="addbtn">Add Wellet</button>
+  </div>
+  </div>
+	
+	</form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" id="updateButton" class="btn btn-primary">Update</button>
+      </div>
+    </div>
+  </div>
+</div>
+    <script>
+        $(document).ready(function () {		
+		$("#addbtn").click(function (){
+		
+            var WalletId = $("#WalletId").val();
+            var WalletName = $("#WalletName").val();
+            var Description = $("#Description").val();
+            var Amount = $("#Amount").val();
+		
+		
+		
+            var obj = { WalletId: WalletId, WalletName: WalletName, Description: Description, Amount: Amount};
+		
+		
+		$.ajax({
+			type: "POST",
+            url: "http://localhost:50912/api/walletbcs173096",
+            data: obj ,
+			
+            success: function (wel){
+                $("#welletbody").append("<tr><td>" + WalletId + "</td><td>" + WalletName + "</td><td>" + Description + "</td><td>" + Amount + "</td></tr>")
+			alert("Success");
+			},
+			
+            failure: function (wel){
+			alert("Failure");
+			},
+			
+            error: function (wel){
+			alert("Error");
+			},
+					
+		});
+		
+		});
+		
+		
+		
+		$("#updateButton").click(function (){
+		
+            var WalletId = $("#WalletId").val();
+            var WalletName = $("#WalletName").val();
+            var Description = $("#Description").val();
+            var Amount = $("#Amount").val();		
+            var Obj = { WalletId: WalletId, WalletName: WalletName, Description: Description, Amount: Amount };
+            var Url = "http://localhost:50912/api/walletbcs173096" + WalletId;
+		
+		
+		$.ajax({
+			type: "PUT",
+            url: Url,
+			data: JSON.stringify(Obj),
+			contentType : "application/json;charset=utf-8",
+			success: function(wel){
+                $("#welletbody").html("");
+			for (w in wel) {
+                $("#welletbody").append("<tr><td>" + res[w].WalletId + "</td><td>" + wel[w].WalletName + "</td><td>" + wel[w].Description + "</td><td>" + wel[w].Amount + "</td><td><button type='button' class='btn btn-info'  data-toggle='modal' data-target='#exampleModal' onclick=editwallet('" + wel[w].WalletId + "')>Edit</button> | <button type='button' class='btn btn-danger'>danger</button> </td></tr>")      
+
+                        }
+			},
+			
+			failure: function(wel){
+			alert("Failure");
+			},
+			
+			error: function(wel){
+			alert("Error");
+			},
+					
+		});
+		
+		});
+	
+		getWalletdata();
+		       
+        });
+        function getWalletdata(){
+		$("#welletbody").html("");
+		
+		$.ajax({
+                    type: "GET",
+            url: "http://localhost:50912/api/walletbcs173096",
+                    success: function (wel) {
+                       
+                        for (e in wel) {
+                            $("#welletbody").append("<tr><td>" + wel[e].WalletId + "</td><td>" + wel[e].WalletName + "</td><td>" + wel[e].Description + "</td><td>" + wel[e].Amount + "</td><td><button type='button' class='btn btn-info'  data-toggle='modal' data-target='#exampleModal' onclick=editwallet('" + wel[e].WalletId + "')>Edit</button> | <button type='button' class='btn btn-danger' onclick=deleteWallet('" + wel[e].WalletId + "')>Delete</button> </td></tr>")      
+
+                        }
+                    },
+                    failure: function (wel) {
+                        alert("Failure");
+                    },
+					error: function (wel) {
+                        alert("Error");
+                    }
+                });
+		} 
+        function editWallet(WalletId){
+            var edit_Url = "http://localhost:50912/api/walletbcs173096" + WalletId;
+		$.ajax({
+                    type: "GET",
+                    url: edit_Url,
+            success: function (wel) {      						  
+                $("#WalletId").val(wel.WalletId);
+                $("#WalletName").val(wel.WalletName);
+                $("#Description").val(wel.Description);
+                $("#Amount").val(wel.Amount);
+						  
+                        
+                    },
+            failure: function (wel) {
+                        alert("Failure");
+                    },
+            error: function (wel) {
+                        alert("Error");
+                    }
+                });
+			
+		
+		}
+        function deleteWallet(WalletId){
+            var del_Url = "http://localhost:50912/api/walletbcs173096" + WalletId;
+		$.ajax({
+                    type: "DELETE",
+                    url: del_Url,
+            success: function (wel) {      						  
+                        getWalletdata();             
+                    },
+            failure: function (wel) {
+                        alert("Failure");
+                    },
+            error: function (wel) {
+                        alert("Error");
+                    }
+                });
+		
+		}
+    </script>
+	
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+</body>
+</html> 
